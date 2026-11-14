@@ -80,6 +80,7 @@ window.LifeData = {
     {id:"artist",name:"Professional artist",base:28000,level:"none",skill:"art",min:42,category:"Fame"},
     {id:"athlete",name:"Professional athlete",base:55000,level:"none",skill:"athletics",min:75,maxAge:36,category:"Fame"},
     {id:"creator",name:"YouTuber / content creator",base:12000,level:"none",skill:"social",min:40,category:"Fame",followers:5000},
+    {id:"underworld",name:"Career criminal",base:44000,level:"none",skill:"social",min:25,category:"Underground"},
     {id:"royal",name:"Royal household representative",base:65000,level:"none",skill:"social",min:20,category:"Special",royalOnly:true}
   ],
   vehicles:[
