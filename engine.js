@@ -411,6 +411,17 @@ function yearly(){
       const gains=skillGains[subject]||{study:15};
       const multiplier=study.level==="master"?.75:study.level==="doctorate"?.9:1;
       Object.entries(gains).forEach(([k,v])=>change({[k]:round(v*multiplier)}));
+      // Completing a qualifying degree makes entry-level roles in that field accessible.
+      const proficiencyFloors={"Computer Science":["technical",50],"Engineering":["technical",50],
+        "Information Technology":["technical",42],"Electrician":["technical",36],
+        "Automotive Technology":["technical",35],"Plumbing":["technical",35],
+        "Business":["business",48],"Fine Arts":["art",49],"Music":["music",50],
+        "Performing Arts":["performance",50],"Nursing":["study",50],
+        "Education":["study",46],"Healthcare":["study",42],"Biology":["study",50],
+        "Journalism":["social",47],"Criminal Justice":["fitness",45],
+        "Digital Media":["art",43],"Audio Engineering":["music",40],
+        "Culinary Arts":["art",36]};
+      const floor=proficiencyFloors[subject];if(floor)s.skills[floor[0]]=Math.max(s.skills[floor[0]],floor[1]);
       change({happiness:11,study:8});s.education.current=null;
     }
   }
