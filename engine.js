@@ -31,7 +31,7 @@ function charge(amount){amount=Math.max(0,round(amount));if(s.cash<amount)return
 function cost(a){return round(a*country(s.country).cost);}
 function price(a){return round(a*country(s.country).housing);}
 function salary(a){return round(a*country(s.country).salary);}
-function netWorth(){return round(s.cash-s.debt+s.assets.properties.reduce((v,p)=>v+p.value-p.mortgage,0)+s.assets.vehicles.reduce((v,p)=>v+p.value,0)+s.assets.items.reduce((v,p)=>v+p.value,0));}
+function netWorth(){return round(s.cash-s.debt+s.assets.properties.reduce((v,p)=>v+p.value-p.mortgage,0)+s.assets.vehicles.reduce((v,p)=>v+p.value,0)+s.assets.items.reduce((v,p)=>v+p.value,0)+s.ventures.reduce((v,p)=>v+p.worth,0));}
 function result(ok,message){return {ok,message:message||""};}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){return false;}return true;}
 function changed(){persist();listener();}
@@ -73,7 +73,7 @@ function newLife(opts={}){
     name:(opts.name||"").trim().slice(0,50)||pick(first)+" "+pick(last),
     birthCountry:home.id,country:home.id,city:pick(home.cities),age:0,alive:true,
     talent:special,royal,background:royal?"Royal household":familyBand,
-    stats:scores,skills,family:rand(42,98),cash:royal?salary(25000):0,debt:0,
+    stats:scores,skills,family:rand(42,98),cash:royal?round(25000*home.salary):0,debt:0,
     education:{highSchool:false,completed:[],current:null,grades:rand(42,84)},
     job:null,experience:0,military:{active:false,branch:null,years:0,veteran:false,rank:""},
     fame:royal?20:0,followers:0,creativeWorks:0,ventures:[],criminalRecord:false,
@@ -205,6 +205,11 @@ function actionCatalog(){
       },s.skills.business<35?"Business skill 35 required":s.ventures.length>=3?"Maximum 3 businesses":"")
     ]));
   }
+  a.push(offer("skills","Develop career skills","Activities",[
+    opt("Study technology & programming","Improves technical abilities needed for engineering and IT careers.",()=>{const gain=rand(6,10)+(s.talent==="intellect"?4:0);change({technical:gain,smarts:2});log("You studied technology and practiced hands-on technical skills.");return result(true,"Technical skill +"+gain+".");}),
+    opt("Learn business & leadership","Build business skill needed for management, entrepreneurship and CEO careers.",()=>{const gain=rand(6,10)+(s.talent==="business"?5:0);change({business:gain,social:2});log("You studied leadership, budgeting and business skills.");return result(true,"Business skill +"+gain+".");}),
+    opt("Improve public speaking","Develop social skill for entertainment, networking and business.",()=>{const gain=rand(6,10)+(s.talent==="performer"?4:0);change({social:gain,performance:2});log("You worked on your communication and public speaking abilities.");return result(true,"Social skill +"+gain+".");})
+  ]));
   a.push(offer("fitness","Exercise / train","Activities",[
     opt("Exercise","Better health and fitness help you as you age.",()=>{change({health:rand(4,8),fitness:rand(5,9),happiness:2});log("You stayed active and improved your fitness.");return result(true,"Your physical fitness improved.");}),
     opt("Train for competitive sport","Build athleticism toward a professional sports career.",()=>{change({athletics:rand(6,11)+(s.talent==="athletic"?5:0),fitness:5,health:2,happiness:-1});log("You trained seriously for sports.");return result(true,"Athletic ability improved.");})
@@ -401,6 +406,11 @@ function yearly(){
     if(study.yearsLeft<=0){
       s.education.completed.push({level:study.level,subject:study.subject,age:a});
       log("You graduated with a "+study.level+" qualification in "+study.subject+". Your career options have expanded.");
+      const subject=study.subject;
+      const skillGains={"Computer Science":{technical:27},"Engineering":{technical:25},"Information Technology":{technical:24},"Electrician":{technical:26},"Automotive Technology":{technical:25},"Plumbing":{technical:25},"Digital Media":{art:22,social:8},"Culinary Arts":{art:24},"Audio Engineering":{music:22,technical:10},"Fine Arts":{art:27},"Music":{music:27},"Performing Arts":{performance:27},"Business":{business:27},"Education":{study:23,social:9},"Nursing":{study:22},"Healthcare":{study:20},"Biology":{study:25},"Criminal Justice":{fitness:16,study:16},"Journalism":{social:23}};
+      const gains=skillGains[subject]||{study:15};
+      const multiplier=study.level==="master"?.75:study.level==="doctorate"?.9:1;
+      Object.entries(gains).forEach(([k,v])=>change({[k]:round(v*multiplier)}));
       change({happiness:11,study:8});s.education.current=null;
     }
   }
@@ -451,6 +461,13 @@ function yearly(){
   if(a>70)change({health:-rand(1,6)});
   if(a>88)change({health:-rand(3,8)});
   change({happiness:rand(-5,4),family:rand(-3,2)});
+  if(s.job?.id==="underworld"){
+    if(Math.random()<.13){
+      const fine=cost(rand(3000,14000));s.debt+=fine;s.criminalRecord=true;
+      log("Police arrested you during criminal activity. You were fined "+fmt(fine)+" and now have a criminal record.");
+      s.job=null;change({happiness:-25,karma:-15});
+    } else change({karma:-4});
+  }
   if(s.job && !s.military.active&&Math.random()<.035){
     log("You were laid off from your job as "+s.job.name+".");s.job=null;change({happiness:-12});
   }
