@@ -476,7 +476,7 @@ const events=[
  {id:"friendbusiness",weight:5,min:18,max:60,when:()=>s.cash>=1200,title:"A friend's business proposal",
   body:"A friend proposes an investment in a new company. It could pay off several years from now.",
   options:[
-    {text:"Invest "+fmt(cost(1000)),desc:"Future payout uncertain.",do:()=>{const amount=cost(1000);if(!charge(amount))return false;const win=Math.random()<.56;const payout=win?round(amount*(1.4+Math.random()*2.1)):0;s.effects.push({age:s.age+3,type:"cash",amount:payout,message:win?"Your earlier startup investment paid out "+fmt(payout)+".":"Your earlier startup investment failed, and you lost your stake."});log("You invested "+fmt(amount)+" in a friend's startup.");}},
+    {text:"Invest in the startup",desc:"Costs about 1,000 game dollars, adjusted for your country; payout uncertain.",do:()=>{const amount=cost(1000);if(!charge(amount))return false;const win=Math.random()<.56;const payout=win?round(amount*(1.4+Math.random()*2.1)):0;s.effects.push({age:s.age+3,type:"cash",amount:payout,message:win?"Your earlier startup investment paid out "+fmt(payout)+".":"Your earlier startup investment failed, and you lost your stake."});log("You invested "+fmt(amount)+" in a friend's startup.");}},
     {text:"Keep your savings",desc:"No financial risk.",do:()=>log("You declined the investment and kept your savings.")}
   ]},
  {id:"training",weight:5,min:11,max:30,when:()=>true,title:"A talented mentor",
