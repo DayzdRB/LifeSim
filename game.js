@@ -222,11 +222,11 @@ function render(){
 }
 $("start").addEventListener("click",()=>fresh($("customName").value));
 $("customName").addEventListener("keydown",e=>{if(e.key==="Enter")fresh($("customName").value);});
-$("newLife").addEventListener("click",()=>{if(state&&!confirm("Start a new life? Your current save will be replaced. Export it first if you want to keep it."))return;state=null;render();$("customName").value="";});
+$("newLife").addEventListener("click",()=>{if(state&&!confirm("Start a new life? Your current save will be replaced. Export it first if you want to keep it."))return;state=null;localStorage.removeItem(SAVE_KEY);render();$("customName").value="";});
 $("ageUp").addEventListener("click",ageUp);
 $("actionButtons").addEventListener("click",e=>{const button=e.target.closest("[data-action]");if(button)doAction(button.dataset.action);});
 $("event").addEventListener("click",e=>{const button=e.target.closest("[data-choice]");if(button)decide(Number(button.dataset.choice));});
-$("legacy").addEventListener("click",e=>{if(e.target.closest("#playAgain")){state=null;render();}});
+$("legacy").addEventListener("click",e=>{if(e.target.closest("#playAgain")){state=null;localStorage.removeItem(SAVE_KEY);render();}});
 $("export").addEventListener("click",()=>{if(!state){toast("Start a life first.");return;}const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="lifesim-"+state.id+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Save exported.");});
 $("import").addEventListener("click",()=>$("importFile").click());
 $("importFile").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>1000000)throw Error("File is too large.");const parsed=JSON.parse(await file.text());if(!validSave(parsed))throw Error("Invalid or unsupported save format.");if(state&&!confirm("Replace your current life with the imported save?"))return;state=parsed;save();render();toast("Save imported.");}catch(err){toast(err.message||"Could not load save.");}finally{e.target.value="";}});
