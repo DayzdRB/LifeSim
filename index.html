@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#111b2a" />
+  <title>LifeSim — Every Life Tells a Story</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./game.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">✦</span><div><strong>LifeSim</strong><small>EVERY LIFE TELLS A STORY</small></div></div>
+      <div class="top-actions"><span class="pill">ALPHA 0.1</span><button id="newLife" class="ghost">↻ New life</button></div>
+    </header>
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="panel identity">
+          <div class="avatar" id="avatar">🙂</div><div class="eyebrow">YOUR CHARACTER</div>
+          <h1 id="name">A new life</h1><p id="identityLine" class="muted"></p>
+          <div class="age-strip"><div><small>AGE</small><strong id="age">0</strong></div><div><small>CASH</small><strong id="cash">$0</strong></div></div>
+          <div id="stats" class="stats"></div>
+        </section>
+        <section class="panel">
+          <h2>Life overview</h2><div id="overview" class="overview"></div>
+        </section>
+        <section class="panel tools">
+          <h2>Save & tools</h2>
+          <p class="muted small">Saves automatically in this browser.</p>
+          <button id="export" class="wide secondary">↓ Export save</button>
+          <button id="import" class="wide secondary">↑ Import save</button>
+          <input id="importFile" type="file" accept=".json,application/json" hidden />
+        </section>
+      </aside>
+      <section class="content">
+        <div id="setup" class="panel setup" hidden>
+          <span class="eyebrow">A FRESH START</span><h2>Create your story</h2>
+          <p class="muted">Choose a name or leave it blank for a randomized life.</p>
+          <label for="customName">Character name</label>
+          <input id="customName" maxlength="45" placeholder="Surprise me!" />
+          <button id="start" class="primary">Start a life →</button>
+        </div>
+        <section id="gameContent">
+          <div class="section-heading"><div><span class="eyebrow">LIFE JOURNAL</span><h2 id="yearTitle">The beginning</h2></div><span id="status" class="pill">Alive</span></div>
+          <div id="event" class="panel event" hidden></div>
+          <section class="panel journal"><div id="timeline" class="timeline"></div></section>
+          <section id="actions" class="panel action-panel">
+            <h2>What will you do?</h2><p class="muted small">Actions can affect your future. Each action is available once a year.</p>
+            <div id="actionButtons" class="action-grid"></div>
+          </section>
+          <button id="ageUp" class="age-button">＋ Age up <span>1 year →</span></button>
+          <section id="legacy" class="panel legacy" hidden></section>
+        </section>
+      </section>
+    </main>
+    <footer>LifeSim is an independent learning project. No paid features. No external accounts.</footer>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
