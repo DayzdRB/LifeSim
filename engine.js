@@ -59,7 +59,7 @@ function careerPay(job){
   return salary(earned);
 }
 function newLife(opts={}){
-  const home=opts.country&&country(opts.country).id===opts.country?country(opts.country):pick(D.countries);
+  const home=opts.country&&country(opts.country).id===opts.country?country(opts.country):pick(opts.background==="Royal household"?D.countries.filter(c=>c.royal):D.countries);
   const special=opts.talent&&D.talents.some(t=>t.id===opts.talent)?opts.talent:pick(D.talents).id;
   const familyBand=["Struggling","Working / middle class","Affluent"].includes(opts.background)?opts.background:(Math.random()<.18?"Struggling":Math.random()<.74?"Working / middle class":"Affluent");
   const royal=home.royal&&(opts.background==="Royal household"||Math.random()<.012);
