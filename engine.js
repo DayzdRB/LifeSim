@@ -61,8 +61,8 @@ function careerPay(job){
 function newLife(opts={}){
   const home=opts.country&&country(opts.country).id===opts.country?country(opts.country):pick(D.countries);
   const special=opts.talent&&D.talents.some(t=>t.id===opts.talent)?opts.talent:pick(D.talents).id;
-  const familyBand=Math.random()<.18?"Struggling":Math.random()<.74?"Working / middle class":"Affluent";
-  const royal=home.royal&&Math.random()<.012;
+  const familyBand=["Struggling","Working / middle class","Affluent"].includes(opts.background)?opts.background:(Math.random()<.18?"Struggling":Math.random()<.74?"Working / middle class":"Affluent");
+  const royal=home.royal&&(opts.background==="Royal household"||Math.random()<.012);
   const skills={study:rand(15,35),technical:rand(8,27),music:rand(5,23),athletics:rand(8,28),art:rand(5,25),business:rand(7,25),social:rand(9,35),fitness:rand(8,28),performance:rand(7,29)};
   const t=talent(special);
   if(t.skill)skills[t.skill]=cap(skills[t.skill]+28);
@@ -430,6 +430,7 @@ function yearly(){
     if(s.assets.properties.some(p=>p.primary))base=round(base*.7);
     expense+=base;
     if(s.relationship.status==="Married")inc+=salary(6500);
+    if(s.royal)inc+=salary(24000); // fictional royalty stipend
     if(s.followers>=1000){
       const payout=round(s.followers*.018*(1+s.fame/100)*c.salary);
       inc+=payout;
