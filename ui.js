@@ -89,7 +89,7 @@ function render(){
     ' <span class="tab-count">'+(cat==="All"?all.length:all.filter(a=>a.category===cat).length)+'</span></button>').join("");
   const visible=tab==="All"?all:all.filter(x=>x.category===tab);
   $("actionButtons").innerHTML=visible.length?visible.map(a=>
-    '<button type="button" class="action-choice" data-action="'+esc(a.id)+'"><strong>'+esc(a.title)+'</strong><small>'+esc(a.description||a.options.length+" available paths")+'</small></button>').join(""):
+    '<button type="button" class="action-choice" data-action="'+esc(a.id)+'" '+(s.used.includes(a.id)?'disabled':'')+'> <strong>'+esc(a.title)+'</strong><small>'+esc(s.used.includes(a.id)?"Done for this year":a.description||a.options.length+" available paths")+'</small></button>').join(""):
     '<p class="muted small">No available actions in this category right now. Age up or try another category.</p>';
   $("actions").hidden=!s.alive;$("ageUp").hidden=!s.alive;$("ageUp").disabled=!!e;
   $("ageUp").innerHTML=e?'Finish the decision first':'＋ Age up <span>1 year →</span>';
@@ -105,7 +105,9 @@ function fillSetup(){
   $("talentSelect").innerHTML='<option value="">Surprise me (random)</option>'+D.talents.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.emoji+" "+t.name)+'</option>').join("");
 }
 function start(){
-  const res=L.newLife({name:$("customName").value,country:$("countrySelect").value,talent:$("talentSelect").value});toast(res.message);
+  const birthplace=$("countrySelect").value,background=$("backgroundSelect").value;
+  if(background==="Royal household"&&birthplace&&!L.country(birthplace).royal){toast("Choose a monarchy such as the UK, Canada, Australia, or Japan for a royal start.");return;}
+  const res=L.newLife({name:$("customName").value,country:birthplace,talent:$("talentSelect").value,background});toast(res.message);
 }
 $("start").addEventListener("click",start);
 $("customName").addEventListener("keydown",e=>{if(e.key==="Enter")start();});
